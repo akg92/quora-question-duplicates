@@ -26,10 +26,17 @@ def build_topic(df,load_existing=True):
 def create_topic_headers():
     headers = ['q1_topic_'+str(x) for x in range(NUM_TOPICS)] + ['q2_topic_'+str(x) for x in range(NUM_TOPICS)]
     return headers
+
+def remap_the_topics(vector):
+    result = [0 for x in range(NUM_TOPICS)]
+    for x in vector:
+        result[x[0]] = x[1]
+    return result
+
 def get_topic_q1_and_q2(model,dictionary,row):
     q_1 =  dictionary.doc2bow(row.question1.split())
     q_2 = dictionary.doc2bow(row.question2.split())
-    result = process_topic(model.get_document_topics(q_1),model.get_document_topics(q_2))
+    result = remap_the_topics(model.get_document_topics(q_1))+ remap_the_topics(model.get_document_topics(q_2))
     return result
 
 
@@ -40,7 +47,7 @@ def process_topic(q1_topic,q2_topic):
     return [x[1] for  x in q1_topic] + [x[1] for  x in q2_topic]
 
 import os
-def build_topics_scores(train_df,test_df,inplace=True,data_folder =',,/data',file_suffix='topics',num_topics=50):
+def build_topics_scores(train_df,test_df,inplace=True,data_folder ='../data',file_suffix='topics',num_topics=50):
 
     ## set number of topics. I know this is not the right way to do the things. What to do, we all carries the weights of  decisions made in the past.
     NUM_TOPICS = num_topics
@@ -66,13 +73,14 @@ def build_topics_scores(train_df,test_df,inplace=True,data_folder =',,/data',fil
     for index,row in train_df.iterrows():
         topics = get_topic_q1_and_q2(model,dictionary,row)
         train_df['topic_headers'].iloc[index] = topics
+        #print(len(topics))
     train_df [topic_headers] = pd.DataFrame(train_df.topic_headers.values.tolist(),index=train_df.index,columns=topic_headers)
     train_df.drop(['topic_headers'],inplace=True,axis=1)
     print('Finished processing the train Topic models')
-    print(list(test_df))
     for index, row in test_df.iterrows():
         topics = get_topic_q1_and_q2(model, dictionary, row)
         test_df['topic_headers'].iloc[index] = topics
+        #print(len(topics))
 
     test_df[topic_headers] = pd.DataFrame(test_df.topic_headers.values.tolist(), index=test_df.index,
                                            columns=topic_headers)
