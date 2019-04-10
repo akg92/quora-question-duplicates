@@ -28,6 +28,17 @@
  Set LOWER_DF = False avoid lower the text before the tf-idf.
  
  See the test function inside tf_idf_scores.py for the example usage.
+ 
+ ### LDA topics
+ * from topic_modeling import build_topics_scores
+ * build_topics_scores(train_df,test_df)
+ 
+ You can set the number of topics by build_topics_scores(train_df,test_df,num_topics). Default is 50 
 
+### word embedding
+
+### doc2vec embedding
+
+Download pretrained from https://github.com/jhlau/doc2vec and place in data folder.
 
 

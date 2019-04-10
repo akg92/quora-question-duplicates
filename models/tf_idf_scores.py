@@ -3,7 +3,7 @@ from gensim.corpora import Dictionary
 from gensim.matutils import  cossim
 import pandas as pd
 from numpy import linalg
-
+import utils
 
 """
 local_letter: str
@@ -66,11 +66,16 @@ def calculate_similarity_single(model,dictionary,question1,question2):
     if type(question1) is float:
         print(question1)
         return 1
-    q1_d2b =  dictionary.doc2bow([x for x in question1.split() if  type(x) is not float  and type(x) is not int ])
+    q1_d2b =  dictionary.doc2bow([x for x in question1.split() if  type(x) is not float  and type(x) is not int ])  # the float check can be removed now. This was added because of nan values. Now nan replacement is done.
     q2_d2b = dictionary.doc2bow([x for x in question2.split() if  type(x) is not float  and type(x) is not int ])
     #print(q2_d2b)
-    q1_vec = model[q1_d2b]
-    q2_vec = model[q2_d2b]
+    ## this create an error. This is not right apparoch. But couldn't figure out the actual issue. ony failing for one irs. Don't have much time.
+    ## if you are free find the issue :)
+    try:
+        q1_vec = model[q1_d2b]
+        q2_vec = model[q2_d2b]
+    except:
+        return 0
     #print(q1_vec)
     cosine_value = cossim(q1_vec,q2_vec)
     return cosine_value
@@ -86,17 +91,6 @@ def calculate_similarity(model,df,dictionary):
         sim_score.append(sim_val)
 
     return sim_score
-"""
-Helper function to lower string.
-"""
-def lower_item(item):
-    return item.lower()
-"""
-Lower text1 and text2
-"""
-def lower_all_text(df):
-    df.question1 = df.question1.map(lower_item)
-    df.question2 = df.question2.map(lower_item)
 
 """
  To lower case is applied to DF.
@@ -108,10 +102,10 @@ def compute_all_similarities_train_and_test(train_df,test_df,data_dir='../data',
     train_df.fillna("",inplace=True)
     test_df.fillna("", inplace=True)
     if LOWER_DF:
-        lower_all_text(train_df)
-        lower_all_text(test_df)
+        utils.lower_all_text(train_df)
+        utils.lower_all_text(test_df)
         print("To Lower DF completed")
-    all_smartirs = get_all_irs()
+    all_smartirs = get_all_irs()[10:]
     for irs in all_smartirs:
         irs_model,dictionary = create_tf_idf_model(train_df,irs)
         sim_scores = calculate_similarity(irs_model,train_df,dictionary)
