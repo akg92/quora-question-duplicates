@@ -86,11 +86,31 @@ def calculate_similarity(model,df,dictionary):
         sim_score.append(sim_val)
 
     return sim_score
+"""
+Helper function to lower string.
+"""
+def lower_item(item):
+    return item.lower()
+"""
+Lower text1 and text2
+"""
+def lower_all_text(df):
+    df.question1 = df.question1.map(lower_item)
+    df.question2 = df.question2.map(lower_item)
+
+"""
+ To lower case is applied to DF.
+"""
+LOWER_DF = True
 
 import os
 def compute_all_similarities_train_and_test(train_df,test_df,data_dir='../data',file_suffix='idf_appended'):
     train_df.fillna("",inplace=True)
     test_df.fillna("", inplace=True)
+    if LOWER_DF:
+        lower_all_text(train_df)
+        lower_all_text(test_df)
+        print("To Lower DF completed")
     all_smartirs = get_all_irs()
     for irs in all_smartirs:
         irs_model,dictionary = create_tf_idf_model(train_df,irs)
@@ -100,9 +120,9 @@ def compute_all_similarities_train_and_test(train_df,test_df,data_dir='../data',
         test_df['tfidf_'+irs] = sim_scores
         print('Finished {}'.format(irs))
     file_name = os.path.join(data_dir,'test_'+file_suffix)
-    test_df.to_csv(file_name)
+    test_df.to_csv(file_name,index=False)
     file_name = os.path.join(data_dir,'train_'+file_suffix)
-    train_df.to_csv(file_name)
+    train_df.to_csv(file_name,index=False)
 
 
 

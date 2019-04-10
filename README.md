@@ -25,6 +25,8 @@
  * import tf_idf_scores
  * tf_idf_scores.compute_all_similarities_train_and_test(train_df,test_df,data_dir='../data',file_suffix='idf_appended')
  
+ Set LOWER_DF = False avoid lower the text before the tf-idf.
+ 
  See the test function inside tf_idf_scores.py for the example usage.
 
 
