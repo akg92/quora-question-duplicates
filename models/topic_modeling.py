@@ -69,6 +69,7 @@ def build_topics_scores(train_df,test_df,inplace=True,data_folder =',,/data',fil
     train_df [topic_headers] = pd.DataFrame(train_df.topic_headers.values.tolist(),index=train_df.index,columns=topic_headers)
     train_df.drop(['topic_headers'],inplace=True,axis=1)
     print('Finished processing the train Topic models')
+    print(list(test_df))
     for index, row in test_df.iterrows():
         topics = get_topic_q1_and_q2(model, dictionary, row)
         test_df['topic_headers'].iloc[index] = topics
@@ -89,7 +90,7 @@ def build_topics_scores(train_df,test_df,inplace=True,data_folder =',,/data',fil
 def test():
 
     test_df = pd.read_csv('../data/test_processed.csv',nrows=2000)
-    train_df = test_df = pd.read_csv('../data/train_processed.csv',nrows=2000)
+    train_df = pd.read_csv('../data/train_processed.csv',nrows=2000)
     build_topics_scores(train_df,test_df)
 
 
