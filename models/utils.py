@@ -1,5 +1,6 @@
 from gensim import corpora
-
+import os
+import pandas as pd
 
 """
 Helper function to lower string.
@@ -22,4 +23,13 @@ def get_text_array(df):
 
 
 
+def get_processed_df(data_dir='../data',file_suffix='processed.csv'):
+    test_fp = os.path.join(data_dir,'test_'+file_suffix)
+    train_fp = os.path.join(data_dir,'train_'+file_suffix)
+    train_df = pd.read_csv(train_fp)
+    # Drop NA values
+    train_df = train_df.dropna()
+    test_df = pd.read_csv(test_fp)
+    test_df = test_df.dropna()
+    return train_df,test_df
 
