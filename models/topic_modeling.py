@@ -2,7 +2,7 @@
 
 from gensim import  corpora
 from gensim.models import  LdaModel
-import  utils
+import  utils as ut
 import  pickle
 import  pandas as pd
 import  os
@@ -10,7 +10,7 @@ NUM_TOPICS = 50
 
 def build_topic(df,load_existing=True):
 
-    words = utils.get_text_array(df)
+    words = ut.get_text_array(df)
     dictionary = corpora.Dictionary(words)
     if load_existing and os.path.exists('lda_model.h5'):
         model = LdaModel.load('lda_model.h5')
@@ -92,7 +92,7 @@ def build_topics_scores(train_df,test_df,inplace=True,data_folder ='../data',fil
     test_df.to_csv(path)
     path = os.path.join(data_folder,'train_'+file_suffix)
     train_df.to_csv(path)
-
+    return train_df,test_df
 
 
 def test():
