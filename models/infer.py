@@ -25,7 +25,7 @@ class Infer:
 
     def compile_results(self,asked_question,questions,score):
         #print('Score {}'.format(score))
-        sorted_index = np.argsort(score)[::-1]
+        sorted_index = np.argsort(score)[::-1][:len(score)]
         full_result = {}
         full_result['asked'] = asked_question
         result = []
@@ -315,13 +315,11 @@ class InferConv1d(Infer):
         words = self.text_to_word_list(text)
         inverted_mapping = np.zeros(self.max_seq_length,dtype=np.int32)
 
-        i = 211
+        i = self.max_seq_length-len(words)-1
         for word in words:
             if word in self.model_dictionary:
                 inverted_mapping[i] = self.model_dictionary[word]
-            i-=1
-            if i==-1:
-                break
+            i+=1
         return inverted_mapping
 
     def predict(self,asked_q,questions):
