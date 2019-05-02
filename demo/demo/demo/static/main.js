@@ -9,6 +9,7 @@ var populate = (data)=>{
       <small class="text-muted"></small>
     </div>
   </a>`;
+    data = data['result']
     for (let i in data){
         let val = data[i];
         let child = $($.parseHTML(sample));
@@ -21,17 +22,28 @@ var populate = (data)=>{
 
 var onenter = ()=>{
 
-    let data = $("#search_box").text();
+    let data = $("#search_box").val();
     data = {"query":data};
     data = JSON.stringify(data);
-    $.post("/matching/",data).done((resp)=>{
+    let algo_id=$(".dropdown .btn").text()||'conv1d';
+
+    $.post("/matching/?algo_id="+algo_id,data).done((resp)=>{
         resp=JSON.parse(resp);
         populate(resp);
     });
 
-}
+};
 $(()=>{
-    $(".search_icon").click(()=>{onenter();});
+
+      $(".dropdown-menu li a").click(function(){
+  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+  $(this).parents(".dropdown").find('.btn').val($(this).data('value'))});
+
+
+      $(".search_icon").click(function(){
+          onenter()
+      });
+
     $(document).keypress(function(event){
 	
         var keycode = (event.keyCode ? event.keyCode : event.which);

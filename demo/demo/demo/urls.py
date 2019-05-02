@@ -21,5 +21,6 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("test/",v.test_hello),
-    path("matching/",v.generate_prediction)  
+    path("matching/",v.generate_prediction),
+    path("add_q/",v.update_question_list)
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
